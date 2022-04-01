@@ -87,8 +87,8 @@ test_pipeline = [
 ]
 
 data = dict(
-    samples_per_gpu=8,
-    workers_per_gpu=4,
+    samples_per_gpu=2,
+    workers_per_gpu=2,
     persistent_workers=True,
     train=train_dataset,
     val=dict(
@@ -124,7 +124,7 @@ interval = 1
 
 # learning policy
 lr_config = dict(
-    _delete_=True,
+    # _delete_=True,
     policy='YOLOX',
     warmup='exp',
     by_epoch=False,
@@ -132,8 +132,7 @@ lr_config = dict(
     warmup_ratio=1,
     warmup_iters=5,  # 5 epoch
     num_last_epochs=num_last_epochs,
-    min_lr_ratio=0.05,
-    step=[8, 11])
+    min_lr_ratio=0.05)
 
 runner = dict(type='EpochBasedRunner', max_epochs=max_epochs)
 
@@ -164,7 +163,7 @@ evaluation = dict(
     dynamic_intervals=[(max_epochs - num_last_epochs, 1)],
     metric='bbox')
 log_config = dict(
-    interval=50,
+    interval=100,
     hooks=[
         dict(type='TextLoggerHook')
     ])
