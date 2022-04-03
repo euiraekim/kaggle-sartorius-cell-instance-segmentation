@@ -22,7 +22,7 @@ model = dict(
 # dataset settings
 data_root = 'data/'
 dataset_type = 'CocoDataset'
-classes = ('shsy5y', 'a172', 'bt474', 'bv2', 'huh7', 'mcf7', 'skov3', 'skbr3')
+classes = ('shsy5y', 'astro', 'cort')
 
 train_pipeline = [
     dict(type='Mosaic', img_scale=img_scale, pad_val=114.0),
@@ -57,9 +57,8 @@ train_dataset = dict(
     dataset=dict(
         type=dataset_type,
         classes=classes,
-        ann_file=data_root + 'LIVECell_dataset_2021/train_8class.json',
-        img_prefix=data_root +
-        'LIVECell_dataset_2021/images/livecell_train_val_images',
+        ann_file=data_root + 'dtrain_g0/json',
+        img_prefix=data_root + 'train',
         pipeline=[
             dict(type='LoadImageFromFile'),
             dict(type='LoadAnnotations', with_bbox=True)
@@ -94,16 +93,14 @@ data = dict(
     val=dict(
         type=dataset_type,
         classes=classes,
-        ann_file=data_root + 'LIVECell_dataset_2021/val_8class.json',
-        img_prefix=data_root +
-        'LIVECell_dataset_2021/images/livecell_train_val_images',
+        ann_file=data_root + '/dval_g0.json',
+        img_prefix=data_root +'train',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         classes=classes,
-        ann_file=data_root + 'LIVECell_dataset_2021/val_8class.json',
-        img_prefix=data_root +
-        'LIVECell_dataset_2021/images/livecell_train_val_images',
+        ann_file=data_root + '/dval_g0.json',
+        img_prefix=data_root +'train',
         pipeline=test_pipeline))
 
 # optimizer
@@ -153,15 +150,20 @@ custom_hooks = [
         priority=49)
 ]
 checkpoint_config = dict(interval=interval)
+
+# evaluation = dict(
+#     save_best='auto',
+#     # The evaluation interval is 'interval' when running epoch is
+#     # less than ‘max_epochs - num_last_epochs’.
+#     # The evaluation interval is 1 when running epoch is greater than
+#     # or equal to ‘max_epochs - num_last_epochs’.
+#     interval=interval,
+#     dynamic_intervals=[(max_epochs - num_last_epochs, 1)],
+#     metric='bbox')
 evaluation = dict(
-    save_best='auto',
-    # The evaluation interval is 'interval' when running epoch is
-    # less than ‘max_epochs - num_last_epochs’.
-    # The evaluation interval is 1 when running epoch is greater than
-    # or equal to ‘max_epochs - num_last_epochs’.
-    interval=interval,
-    dynamic_intervals=[(max_epochs - num_last_epochs, 1)],
-    metric='bbox')
+    interval=1, metric='bbox', classwise=True, proposal_nums=(100, 300, 2000)
+)
+
 log_config = dict(
     interval=100,
     hooks=[
