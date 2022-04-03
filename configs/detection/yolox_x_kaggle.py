@@ -13,7 +13,7 @@ model = dict(
         out_channels=320,
         num_csp_blocks=4),
     bbox_head=dict(
-        type='YOLOXHead', num_classes=8, in_channels=320, feat_channels=320),
+        type='YOLOXHead', num_classes=3, in_channels=320, feat_channels=320),
     train_cfg=dict(assigner=dict(type='SimOTAAssigner', center_radius=2.5)),
     # In order to align the source code, the threshold of the val phase is
     # 0.01, and the threshold of the test phase is 0.001.
@@ -57,7 +57,7 @@ train_dataset = dict(
     dataset=dict(
         type=dataset_type,
         classes=classes,
-        ann_file=data_root + 'dtrain_g0/json',
+        ann_file=data_root + 'dtrain_g0.json',
         img_prefix=data_root + 'train',
         pipeline=[
             dict(type='LoadImageFromFile'),
@@ -165,7 +165,7 @@ evaluation = dict(
 )
 
 log_config = dict(
-    interval=100,
+    interval=50,
     hooks=[
         dict(type='TextLoggerHook')
     ])
