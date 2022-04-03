@@ -170,7 +170,7 @@ log_config = dict(
 
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-load_from = data_root + 'checkpoints/yolo_x_coco.pth'
+load_from = data_root + 'checkpoints/yolox_x_coco.pth'
 workflow = [('train', 1)]
 
 # # disable opencv multithreading to avoid system being overloaded
