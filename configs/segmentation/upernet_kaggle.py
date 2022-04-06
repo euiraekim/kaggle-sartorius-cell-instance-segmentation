@@ -64,7 +64,7 @@ img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 img_scale = (128, 128)
 classes = ('cell', 'bg')
-palette = [[0, 0, 0], [255, 255, 255]]
+palette = [[255, 255, 255], [0, 0, 0]]
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', reduce_zero_label=True),
@@ -91,7 +91,7 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=32,
+    samples_per_gpu=64,
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
@@ -126,7 +126,7 @@ data = dict(
 optimizer = dict(
     # _delete_=True,
     type='AdamW',
-    lr=0.00006 / 32,
+    lr=0.00006 / 64,
     betas=(0.9, 0.999),
     weight_decay=0.01,
     paramwise_cfg=dict(
@@ -139,14 +139,14 @@ optimizer_config = dict()
 # learning policy
 lr_config = dict(policy='poly', power=0.9, min_lr=1e-4, by_epoch=False)
 # runtime settings
-runner = dict(type='IterBasedRunner', max_iters=100000)
-checkpoint_config = dict(by_epoch=False, interval=1000)
+runner = dict(type='IterBasedRunner', max_iters=30000)
+checkpoint_config = dict(by_epoch=False, interval=200)
 evaluation = dict(interval=1000, metric='mIoU', pre_eval=True)
 
 # yapf:disable
 log_config = dict(
     interval=100,
-    _delete_=True,
+    # _delete_=True,
     policy='poly',
     warmup='linear',
     warmup_iters=1500,

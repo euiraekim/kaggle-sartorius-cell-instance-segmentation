@@ -7,7 +7,9 @@ import mmcv
 from pycocotools.coco import COCO
 import pycocotools.mask as mask_utils
 
+# 원본 데이터셋의 전체 image가 들어있는 폴더 경로
 image_path = '../data/train'
+# class는 cell과 background로 2가지
 classes = ('cell', 'bg')
 palette = [[0, 0, 0], [255, 255, 255]]
 
@@ -22,6 +24,7 @@ def convert_to_mmseg(coco_path, save_path, mode='train'):
     make_dir(ann_save_path)
 
     coco = COCO(coco_path)
+    # 모든 annotation에 대하여 루프를 돌림
     for ann in tqdm(coco.loadAnns(coco.getAnnIds())):
         x_min, y_min, width, height = ann['bbox']
         ann_id = ann['id']
@@ -31,6 +34,8 @@ def convert_to_mmseg(coco_path, save_path, mode='train'):
         crop_img = img.crop((x_min, y_min, x_min + width, y_min + height))
         crop_img.save(os.path.join(image_save_path, str(ann_id)+'.png'))
         
+        # 마스크를 가져오고 b-box에 맞게 crop 후 palette를 입혀 저장
+        # 이 파일이 학습 시 annotation이 된다.
         mask_np = mask_utils.decode(ann['segmentation'])
         crop_mask = mask_np[int(y_min):int(y_min+height), int(x_min):int(x_min+width)]
         seg_img = Image.fromarray(crop_mask).convert('P')
